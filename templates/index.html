@@ -1,0 +1,73 @@
+{% extends "layout.html" %}
+
+{% block body %}
+    {% if search %}
+        <div class="d-flex p-2" id="button-bar">
+            <div class="box-header" id="searchButton"><button class="myButton" onclick="window.location.href = '/' ; ">search</button></div>
+            <div class="box-header" id="contentButton"><button class="myButton" id="graphB" onclick="displayContent()">graph</button></div>
+        </div>
+
+        {{ search }}
+
+        {% if tracks %}
+            <div id="animation" data-anim='{{ tracks | tojson }}'>
+                <script src="/static/animation/particle.js"></script>
+                <script src="/static/animation/sketch.js"></script>
+            </div>
+            <p id="info"></p>
+
+            <div id="graphDiv">
+                <div class="dropdown" data-bs-theme="dark">
+                    <button class="btn btn-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        features
+                    </button>
+                    <ul class="dropdown-menu">
+                        {% for key, value in tracks[0].items() %}
+                            {% if key != 'name' and key != 'artist' %}
+                                <li><a class="dropdown-item feature">{{key}}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+                
+                <canvas id="chart" data-anim='{{ tracks | tojson }}'></canvas>
+                <script src="static/chart.js"></script>
+            </div>
+        {% endif %}
+    {% elif apology %}
+        <p>{{ apology }} </p>
+        <div class="box-header" id="searchButton"><button class="myButton" onclick="window.location.href = '/' ; ">search</button></div>
+    {% else %}
+        <div class="box">
+            <div class="box-header">search</div>
+            <div class="box-content">
+                <p>search for anything, in spotify .</p>
+
+                <form class="d-inline-flex" action="/" method="post">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="enter query" id="searchAnything" name="searchAnything" maxlength="30">
+                    </div>
+                    <button type="submit" class="btn btn-dark">submit</button>
+                </form>
+            
+                <p>search for a specific playlist (enter the url) </p>
+            
+                <form class="d-inline-flex" action="/" method="post">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="enter playlist url" id="searchPlaylist" name="searchPlaylist" maxlength="100">
+                    </div>
+                    <button type="submit" class="btn btn-dark">submit</button>
+                </form>
+        
+                <p> search for a specific artist </p>
+                
+                <form class="d-inline-flex" action="/" method="post">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="enter artist name" id="searchArtist" name="searchArtist" maxlength="100">
+                    </div>
+                    <button type="submit" class="btn btn-dark">submit</button>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
